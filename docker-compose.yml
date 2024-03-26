@@ -29,19 +29,6 @@ services:
       - ./install/docker/mongodb-user-init.js:/docker-entrypoint-initdb.d/user-init.js
     profiles:
       - mongo
-  postgres:
-    image: postgres:16.2-alpine
-    restart: unless-stopped
-    expose:
-      - "5432"
-    environment:
-      POSTGRES_USER: nodebb
-      POSTGRES_PASSWORD: nodebb
-      POSTGRES_DB: nodebb
-    volumes:
-      - ./.docker/database/postgresql/data:/var/lib/postgresql/data
-    profiles:
-      - postgres
   redis:
     image: redis:7.2.3-alpine
     restart: unless-stopped
