@@ -41,7 +41,7 @@ RUN mkdir -p /usr/src/app && \
 USER root
 RUN mkdir -p /opt/config && \
     chown -R node:node /opt/config
-USER node # Voltando ao usuário node
+USER node
 
 COPY --chown=node:node --from=rebuild /usr/src/build /usr/src/app
 
