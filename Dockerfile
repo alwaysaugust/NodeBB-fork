@@ -1,15 +1,13 @@
 FROM --platform=$BUILDPLATFORM node:lts as npm
 
 RUN mkdir -p /usr/src/build && \
-    chown -R node:node /usr/src/build
+    chown -R /usr/src/build
 WORKDIR /usr/src/build
 
 ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
 
-COPY --chown=node:node install/package.json /usr/src/build/package.json
-
-USER node
+COPY install/package.json /usr/src/build/package.json
 
 RUN npm install --omit=dev
 
@@ -19,7 +17,7 @@ ARG BUILDPLATFORM
 ARG TARGETPLATFORM
 
 RUN mkdir -p /usr/src/build && \
-    chown -R node:node /usr/src/build
+    chown -R /usr/src/build
 
 COPY --from=npm /usr/src/build /usr/src/build
 
@@ -35,19 +33,13 @@ ENV NODE_ENV=$NODE_ENV \
     silent=false
 
 RUN mkdir -p /usr/src/app && \
-    chown -R node:node /usr/src/app
+    chown -R /usr/src/app
 
-
-USER root
-RUN mkdir -p /opt/config && \
-    chown -R node:node /opt/config
-USER node
-
-COPY --chown=node:node --from=rebuild /usr/src/build /usr/src/app
+COPY --from=rebuild /usr/src/build /usr/src/app
 
 WORKDIR /usr/src/app
 
-COPY --chown=node:node . /usr/src/app
+COPY . /usr/src/app
 
 EXPOSE 4567
 VOLUME ["/usr/src/app/node_modules", "/usr/src/app/build", "/usr/src/app/public/uploads", "/opt/config"]
