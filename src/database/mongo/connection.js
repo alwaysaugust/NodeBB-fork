@@ -47,8 +47,6 @@ connection.getConnectionOptions = function (mongo) {
 		maxPoolSize: 20,
 		minPoolSize: 3,
 		connectTimeoutMS: 90000,
-		ssl: true,
-		authSource: 'admin',
 	};
 
 	return _.merge(connOptions, mongo.options || {});
