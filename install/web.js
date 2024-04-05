@@ -187,6 +187,7 @@ function install(req, res) {
 		NODEBB_DB_USER: nconf.get(`${database}:username`) || req.body[`${database}:username`],
 		NODEBB_DB_PASSWORD: nconf.get(`${database}:password`) || req.body[`${database}:password`],
 		NODEBB_DB_NAME: nconf.get(`${database}:database`) || req.body[`${database}:database`],
+		NODEBB_DB_URI: nconf.get(`${database}:uri`) || req.body[`${database}:uri`],
 		NODEBB_DB_SSL: nconf.get(`${database}:ssl`) || req.body[`${database}:ssl`],
 		defaultPlugins: JSON.stringify(nconf.get('defaultplugins') || nconf.get('defaultPlugins') || []),
 	};

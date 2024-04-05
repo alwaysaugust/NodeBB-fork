@@ -64,6 +64,7 @@ function checkSetupFlagEnv() {
 		NODEBB_DB_USER: 'username',
 		NODEBB_DB_PASSWORD: 'password',
 		NODEBB_DB_NAME: 'database',
+		NODEBB_DB_URI: 'uri',
 		NODEBB_DB_SSL: 'ssl',
 	};
 
@@ -199,9 +200,10 @@ async function completeConfigSetup(config) {
 	if (nconf.get('package_manager')) {
 		config.package_manager = nconf.get('package_manager');
 	}
+
 	nconf.overrides(config);
 	const db = require('./database');
-	await db.init();
+	await db.init(config);
 	if (db.hasOwnProperty('createIndices')) {
 		await db.createIndices();
 	}
