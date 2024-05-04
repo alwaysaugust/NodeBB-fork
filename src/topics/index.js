@@ -125,6 +125,10 @@ Topics.getTopicsByTids = async function (tids, options) {
 	]);
 
 	const sortNewToOld = callerSettings.topicPostSort === 'newest_to_oldest';
+
+	const mainPids = result.topics.map(topic => topic.mainPid);
+	const mainPosts = await posts.getPostsByPids(mainPids, uid);
+
 	result.topics.forEach((topic, i) => {
 		if (topic) {
 			topic.thumbs = result.thumbs[i];
@@ -137,6 +141,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 			topic.teaser = result.teasers[i] || null;
 			topic.isOwner = topic.uid === parseInt(uid, 10);
 			topic.ignored = isIgnored[i];
+			topic.mainPost = mainPosts[index];
 			topic.unread = parseInt(uid, 10) <= 0 || (!hasRead[i] && !isIgnored[i]);
 			topic.bookmark = bookmarks[i] && (sortNewToOld ?
 				Math.max(1, topic.postcount + 2 - bookmarks[i]) :
