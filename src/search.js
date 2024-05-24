@@ -72,7 +72,7 @@ async function searchInContent(data) {
 	} else if (data.searchIn === 'bookmarks') {
 		pids = await searchInBookmarks(data, searchCids, searchUids);
 	} else if (data.searchIn === 'topics') {
-		tids = await doSearch('topic', ['titles', 'titlesposts']);
+		tids = await doSearch('topic', ['topics', 'titlesposts']);
 	} else {
 		[pids, tids] = await Promise.all([
 			doSearch('post', ['posts', 'titlesposts']),
