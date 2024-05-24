@@ -36,7 +36,7 @@ searchController.search = async function (req, res, next) {
 	let allowed = (req.query.in === 'users' && userPrivileges['search:users']) ||
 					(req.query.in === 'tags' && userPrivileges['search:tags']) ||
 					(req.query.in === 'categories') ||
-					(['titles', 'titlesposts', 'posts', 'bookmarks'].includes(req.query.in) && userPrivileges['search:content']);
+					(['titles', 'titlesposts', 'topics', 'posts', 'bookmarks'].includes(req.query.in) && userPrivileges['search:content']);
 	({ allowed } = await plugins.hooks.fire('filter:search.isAllowed', {
 		uid: req.uid,
 		query: req.query,
@@ -152,7 +152,7 @@ async function recordSearch(data) {
 		return;
 	}
 	const cleanedQuery = String(query).trim().toLowerCase().slice(0, 255);
-	if (['titles', 'titlesposts', 'posts'].includes(searchIn) && cleanedQuery.length > 2) {
+	if (['titles', 'titlesposts','topics', 'posts'].includes(searchIn) && cleanedQuery.length > 2) {
 		searches[data.uid] = searches[data.uid] || { timeoutId: 0, queries: [] };
 		searches[data.uid].queries.push(cleanedQuery);
 		if (searches[data.uid].timeoutId) {

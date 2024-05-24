@@ -19,7 +19,7 @@ search.search = async function (data) {
 	data.sortBy = data.sortBy || 'relevance';
 
 	let result;
-	if (['posts', 'titles', 'titlesposts', 'bookmarks'].includes(data.searchIn)) {
+	if (['posts', 'titles', 'titlesposts', 'bookmarks', 'topics'].includes(data.searchIn)) {
 		result = await searchInContent(data);
 	} else if (data.searchIn === 'users') {
 		result = await user.search(data);
@@ -71,6 +71,8 @@ async function searchInContent(data) {
 		pids = await topics.search(tid, cleanedTerm);
 	} else if (data.searchIn === 'bookmarks') {
 		pids = await searchInBookmarks(data, searchCids, searchUids);
+	} else if (data.searchIn === 'topics') {
+		tids = await doSearch('topic', ['titles', 'titlesposts']);
 	} else {
 		[pids, tids] = await Promise.all([
 			doSearch('post', ['posts', 'titlesposts']),
