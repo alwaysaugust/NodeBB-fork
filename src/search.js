@@ -85,7 +85,7 @@ async function searchInContent(data) {
 	let allPids = mainPids.concat(pids).filter(Boolean);
 
 	if(data.searchIn === 'topics') {
-		const isMainPids = posts.isMain(pids)
+		const isMainPids = await posts.isMain(pids)
 		allPids = pids.filter((_, index) => isMainPids[index])
 	}
 
