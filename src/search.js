@@ -47,7 +47,7 @@ async function searchInContent(data) {
 		getSearchUids(data),
 	]);
 
-	async function doSearch(type, searchIn) {
+	async function doSearch(type, searchIn, ids = []) {
 		if (searchIn.includes(data.searchIn)) {
 			const result = await plugins.hooks.fire('filter:search.query', {
 				index: type,
@@ -56,7 +56,7 @@ async function searchInContent(data) {
 				cid: searchCids,
 				uid: searchUids,
 				searchData: data,
-				ids: [],
+				ids,
 			});
 			return Array.isArray(result) ? result : result.ids;
 		}
@@ -72,7 +72,11 @@ async function searchInContent(data) {
 	} else if (data.searchIn === 'bookmarks') {
 		pids = await searchInBookmarks(data, searchCids, searchUids);
 	} else if (data.searchIn === 'topics') {
-		tids = await doSearch('topic', ['topics', 'titlesposts']);
+		const tidsFound = await doSearch('topic', ['topics', 'titlesposts']);
+
+		const mainPidsFound = await topics.getMainPids(tidsFound);
+
+		pids = await doSearch('post', ['topics', 'titlesposts'], mainPidsFound);
 	} else {
 		[pids, tids] = await Promise.all([
 			doSearch('post', ['posts', 'titlesposts']),
