@@ -86,7 +86,7 @@ Categories.setPrivilege = async (req, res) => {
 
 	await api.categories.setPrivilege(req, {
 		cid,
-		privilege: req.body.privileges || req.query.privileges,
+		privilege: req.body.privileges || req.query.privilege,
 		member: req.body.member,
 		set: req.method === 'PUT',
 	});
