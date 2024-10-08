@@ -508,4 +508,14 @@ Notifications.merge = async function (notifications) {
 	return data && data.notifications;
 };
 
+Notifications.getNotification = async function (nid, uid) {
+	const notification = await db.getObject(`notifications:${nid}`);
+
+	if (!notification) {
+		return null;
+	}
+
+	return notification;
+};
+
 require('./promisify')(Notifications);

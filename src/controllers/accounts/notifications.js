@@ -4,7 +4,7 @@ const user = require('../../user');
 const helpers = require('../helpers');
 const plugins = require('../../plugins');
 const pagination = require('../../pagination');
-
+const notifications = require('../../notifications');
 const notificationsController = module.exports;
 
 notificationsController.get = async function (req, res, next) {
@@ -80,4 +80,23 @@ notificationsController.get = async function (req, res, next) {
 		title: '[[pages:notifications]]',
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:notifications]]' }]),
 	});
+};
+
+notificationsController.getNotification = async function (req, res) {
+    const notificationId = req.params.notificationId;
+    const uid = req.uid;
+
+    try {
+        const notification = await notifications.getNotification(notificationId, uid);
+        if (!notification) {
+            return helpers.notFound(req, res);
+        }
+
+        notification.isRead = await user.notifications.isRead(notificationId, uid);
+
+        helpers.formatApiResponse(200, res, notification);
+    } catch (err) {
+        helpers.logError(err);
+        helpers.formatApiResponse(500, res, new Error('Error retrieving notification'));
+    }
 };
