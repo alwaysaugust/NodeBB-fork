@@ -100,3 +100,15 @@ notificationsController.getNotification = async function (req, res) {
         helpers.formatApiResponse(500, res, new Error('Error retrieving notification'));
     }
 };
+
+notificationsController.markRead = async function (req, res) {
+    const notificationId = req.params.notificationId;
+    const uid = req.uid;
+
+    try {
+        await user.notifications.markRead(notificationId, uid);
+        helpers.formatApiResponse(200, res, { message: 'Notification marked as read' });
+    } catch (err) {
+        helpers.logError(err);
+    }
+};
