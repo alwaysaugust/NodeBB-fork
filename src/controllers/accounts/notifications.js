@@ -1,5 +1,7 @@
 'use strict';
 
+const winston = require('winston');
+
 const user = require('../../user');
 const helpers = require('../helpers');
 const plugins = require('../../plugins');
@@ -94,9 +96,9 @@ notificationsController.getNotification = async function (req, res) {
 
         notification.isRead = await user.notifications.isRead(notificationId, uid);
 
-        helpers.formatApiResponse(200, res, notification);
+        helpers.formatApiResponse(200, res, notification);f
     } catch (err) {
-        helpers.logError(err);
+				winston.error(`[notificationsController.getNotification] Error retrieving notification: ${err.stack}`);
         helpers.formatApiResponse(500, res, new Error('Error retrieving notification'));
     }
 };
@@ -109,6 +111,7 @@ notificationsController.markRead = async function (req, res) {
         await user.notifications.markRead(notificationId, uid);
         helpers.formatApiResponse(200, res, { message: 'Notification marked as read' });
     } catch (err) {
-        helpers.logError(err);
+				winston.error(`[notificationsController.markRead] Error marking notification as read: ${err.stack}`);
+        helpers.formatApiResponse(500, res, new Error('Error marking notification as read'));
     }
 };
