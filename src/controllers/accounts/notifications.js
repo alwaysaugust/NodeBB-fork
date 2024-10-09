@@ -90,13 +90,12 @@ notificationsController.getNotification = async function (req, res) {
 
     try {
         const notification = await notifications.getNotification(notificationId, uid);
+
         if (!notification) {
-            return helpers.notFound(req, res);
+          return helpers.notFound(req, res);
         }
 
-        notification.isRead = await user.notifications.isRead(notificationId, uid);
-
-        helpers.formatApiResponse(200, res, notification);f
+        helpers.formatApiResponse(200, res, notification);
     } catch (err) {
 				winston.error(`[notificationsController.getNotification] Error retrieving notification: ${err.stack}`);
         helpers.formatApiResponse(500, res, new Error('Error retrieving notification'));
@@ -108,10 +107,10 @@ notificationsController.markRead = async function (req, res) {
     const uid = req.uid;
 
     try {
-        await user.notifications.markRead(notificationId, uid);
-        helpers.formatApiResponse(200, res, { message: 'Notification marked as read' });
+			await notifications.markRead(notificationId, uid);
+			helpers.formatApiResponse(200, res, { message: 'Notification marked as read' });
     } catch (err) {
-				winston.error(`[notificationsController.markRead] Error marking notification as read: ${err.stack}`);
-        helpers.formatApiResponse(500, res, new Error('Error marking notification as read'));
+			winston.error(`[notificationsController.markRead] Error marking notification as read: ${err.stack}`);
+			helpers.formatApiResponse(500, res, new Error('Error marking notification as read'));
     }
 };
