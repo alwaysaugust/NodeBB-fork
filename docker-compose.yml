@@ -14,23 +14,12 @@ services:
       - ./.docker/public/uploads:/usr/src/app/public/uploads
       - ./.docker:/opt/config
       - ./install/docker/setup.json:/usr/src/app/setup.json
-  mongo:
-    image: "mongo:7-jammy"
-    restart: unless-stopped
-    ports:
-      - "27017:27017"
-    expose:
-      - "27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: nodebb
-      MONGO_INITDB_ROOT_PASSWORD: nodebb
-      MONGO_INITDB_DATABASE: nodebb
-    volumes:
-      - ./.docker/database/mongo/config:/etc/mongo
-      - ./.docker/database/mongo/data:/data/db
-      - ./install/docker/mongodb-user-init.js:/docker-entrypoint-initdb.d/user-init.js
-    profiles:
-      - mongo
+    environment:      # Move the MongoDB environment variables here
+      MONGO_INITDB_ROOT_USERNAME: ttr
+      MONGO_INITDB_ROOT_PASSWORD: your_atlas_password
+      MONGO_INITDB_DATABASE: ttr-dev
+      MONGODB_URL: "mongodb+srv://ttr-dev.5nxhwip.mongodb.net/?retryWrites=true&w=majority"
+
   redis:
     image: redis:7.2.3-alpine
     restart: unless-stopped
