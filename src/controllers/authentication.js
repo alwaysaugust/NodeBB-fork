@@ -170,7 +170,7 @@ authenticationController.registerComplete = async function (req, res) {
 		};
 
 		const results = await Promise.allSettled(callbacks.map(async (cb) => {
-			await cb(req.session.registration, req.body);
+				await cb(req.session.registration, req.body);
 		}));
 		const errors = results.map(result => result.status === 'rejected' && result.reason && result.reason.message).filter(Boolean);
 		if (errors.length) {
@@ -299,27 +299,27 @@ function continueLogin(strategy, req, res, next) {
 
 		plugins.hooks.fire('action:login.continue', { req, strategy, userData, error: null });
 
-		if (userData.passwordExpiry && userData.passwordExpiry < Date.now()) {
-			winston.verbose(`[auth] Triggering password reset for uid ${userData.uid} due to password policy`);
-			req.session.passwordExpired = true;
-
-			const code = await user.reset.generate(userData.uid);
-			(res.locals.redirectAfterLogin || redirectAfterLogin)(req, res, `${nconf.get('relative_path')}/reset/${code}`);
+		// Password expiry check removed, allow login to continue
+		// if (userData.passwordExpiry && userData.passwordExpiry < Date.now()) {
+		// 	winston.warn(`[continueLogin] Password expired for uid: ${userData.uid}`);
+		// 	req.session.passwordExpired = true;
+		// 	const code = await user.reset.generate(userData.uid);
+		// 	(res.locals.redirectAfterLogin || redirectAfterLogin)(req, res, `${nconf.get('relative_path')}/reset/${code}`);
+		// } else {
+		delete req.query.lang;
+		await authenticationController.doLogin(req, userData.uid);
+		let destination;
+		if (req.session.returnTo) {
+			destination = req.session.returnTo.startsWith('http') ?
+				req.session.returnTo :
+				nconf.get('relative_path') + req.session.returnTo;
+			delete req.session.returnTo;
 		} else {
-			delete req.query.lang;
-			await authenticationController.doLogin(req, userData.uid);
-			let destination;
-			if (req.session.returnTo) {
-				destination = req.session.returnTo.startsWith('http') ?
-					req.session.returnTo :
-					nconf.get('relative_path') + req.session.returnTo;
-				delete req.session.returnTo;
-			} else {
-				destination = `${nconf.get('relative_path')}/`;
-			}
-
-			(res.locals.redirectAfterLogin || redirectAfterLogin)(req, res, destination);
+			destination = `${nconf.get('relative_path')}/`;
 		}
+
+		(res.locals.redirectAfterLogin || redirectAfterLogin)(req, res, destination);
+		// }
 	})(req, res, next);
 }
 
